@@ -10,6 +10,21 @@ enum ProblemPart
   B = 2
 end
 
+enum ProblemResult
+  Correct = 1
+  Incorrect = 2
+  Timeout = 3
+  def to_b : Bool
+    case self
+    when ProblemResult::Timeout, ProblemResult::Incorrect
+      return false
+    when ProblemResult::Correct 
+        return true
+    end
+    return false
+  end
+end
+
 class AdventOfCodeClient
   AOC_SCHEME             = "https"
   AOC_HOST               = "adventofcode.com"
@@ -18,13 +33,13 @@ class AdventOfCodeClient
   AOC_PUZZLE_SUBMIT_PATH = "/answer"
 
   getter stored_cookies : Hash(String, String)
-  getter tested_solutions : Hash(String, Bool)
+  getter tested_solutions : Hash(String, ProblemResult)
   getter day : Int32
   getter year : Int32
 
-  def initialize(@day, @year = 2022)
+  def initialize(@day, @year = 2021)
     @stored_cookies = Config.new.read_cookies
-    @tested_solutions = Hash(String, Bool).new(JSON::PullParser.new(File.read("./testedsolutions.json")))
+    @tested_solutions = Hash(String, ProblemResult).new(JSON::PullParser.new(File.read("./testedsolutions.json")))
   end
 
   def flush
@@ -50,13 +65,26 @@ class AdventOfCodeClient
 
   def submit_solution(part : ProblemPart, value : String) : Bool
     if (tested_solutions[day.to_s + year.to_s + part.to_s + value]? != nil)
-      p "You already tried that"
-      return tested_solutions[day.to_s + year.to_s + part.to_s + value]
-    end  
-    p "Submitting to AoC"
+      ret = tested_solutions[day.to_s + year.to_s + part.to_s + value]
+      puts "You already tried Answer \"#{value}\" for part #{part} and it was #{ret}"
+      return ret.to_b
+    end
+    
     ret = parse_aoc_response post_solution(part, value)
-    tested_solutions[day.to_s + year.to_s + part.to_s + value] = ret
-    return ret
+    case ret[0]
+    when ProblemResult::Timeout
+      if (md = ret[1].match(/.*([0-9]+m [0-9]{2}).*/))
+        puts "Submit Time Violation, wait #{md[1]}"
+      else
+        puts "Submit Time Violation, \"#{ret[1]}\""
+      end
+      return false
+    when ProblemResult::Correct, ProblemResult::Incorrect
+      puts "Answer: \"#{value}\" for part #{part} was #{ret[0]}"
+      tested_solutions[day.to_s + year.to_s + part.to_s + value] = ret[0]
+      return ret[0].to_b
+    end
+    return false
   end
 
   def post_solution(part : ProblemPart, value : String) : String
@@ -85,7 +113,7 @@ class AdventOfCodeClient
     return nil
   end
 
-  def parse_aoc_response(response : String) : Bool
+  def parse_aoc_response(response : String) : Tuple(ProblemResult, String)
     doc = XML.parse_html(response)
     if (html = doc.first_element_child)
       if (art = search_xml(html, "article"))
@@ -95,14 +123,17 @@ class AdventOfCodeClient
           end.each do |text|
             case text.content
             when /That's not the right answer.*/
-              return false
+              return {ProblemResult::Incorrect, ""}
             when /That's the right answer.*/
-              return true
+              return {ProblemResult::Correct, ""}
+            when /You gave an answer too recently.*/
+              return {ProblemResult::Timeout, text.content}
             end
           end
         end
       end
     end
+    File.write("./UnknownRespons.html", response)
     raise "Unable to parse response"
   end
 

@@ -15,7 +15,7 @@ class InputData
   def input
     return if cached?
 
-    input = AdventOfCodeClient.new.get_input day: day, year: year
+    input = AdventOfCodeClient.new(day, year).get_input
 
     create_cache(input)
   end
