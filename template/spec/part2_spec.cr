@@ -1,19 +1,17 @@
 require "spec"
 require "../src/*"
+require "./spec_shared"
 
-root = "./"
-day = "template"
+ds = DaySpec.new()
 
-describe day do
+describe ds.dayShortName do
     describe "Part2" do
         it "example test case" do
-            p1 = Part2.new(root + "/" + day + "/input/example.txt")
+            p1 = Part2.new(ds.dayPath.to_s + "/input/example.txt")
             p1.run.should eq("")
         end
-    end
-    describe "Part2 solution" do
-        pending "part2 input" do
-            p2 = Part2.new(root + "/" + day + "/input/input.txt")
+        pending "part2 solution" do
+            p2 = Part2.new(ds.dayPath.to_s + "/input/input.txt")
             result = p2.run
             Spec.after_suite { p! result}
         end
