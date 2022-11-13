@@ -7,7 +7,7 @@ class DaySpec
         @dayPath = Path.new(__DIR__, "../").normalize
         @dayShortName = dayPath.basename
         if (md = dayShortName.match(/Day([0-9]{2})/))
-            @dayNumber = md[0].to_i
+            @dayNumber = md[1].to_i
         else
             @dayNumber = 1
         end
