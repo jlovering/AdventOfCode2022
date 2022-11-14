@@ -2,6 +2,7 @@ class DaySpec
     getter dayPath : Path
     getter dayShortName : String
     getter dayNumber : Int32
+    getter enableSubmit : Bool
 
     def initialize
         @dayPath = Path.new(__DIR__, "../").normalize
@@ -11,5 +12,9 @@ class DaySpec
         else
             @dayNumber = 1
         end
+        @enableSubmit = false
+{% if flag?(:submit) %}
+        @enableSubmit = true
+{% end %}
     end
 end

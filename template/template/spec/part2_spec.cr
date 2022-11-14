@@ -15,7 +15,10 @@ describe ds.dayShortName do
         it "part2 solution", tags: "solution" do
             p2 = Part2.new(ds.dayPath.to_s + "/input/input.txt")
             result = p2.run
-            if result != ""
+            Spec.after_suite {
+                puts "\nPart 2 result: #{result}"
+            }
+            if result != "" && ds.enableSubmit
                 aoC_result = aoCc.submit_solution(ProblemPart::B, result)
                 aoCc.flush
                 aoC_result.should be_true
