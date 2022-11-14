@@ -1,7 +1,7 @@
 require "spec"
 require "../src/*"
 require "./spec_shared"
-require "../../../support/src/advent_of_code_client"
+require "support/advent_of_code_client"
 
 ds = DaySpec.new()
 aoCc = AdventOfCodeClient.new(ds.dayNumber,2016)
