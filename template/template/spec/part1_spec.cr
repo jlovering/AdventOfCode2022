@@ -22,8 +22,6 @@ describe ds.dayShortName do
                 aoC_result = aoCc.submit_solution(ProblemPart::A, result)
                 aoCc.flush
                 aoC_result.should be_true
-            else
-                false.should be_true
             end
         end
     end
