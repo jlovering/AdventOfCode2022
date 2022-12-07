@@ -36,8 +36,16 @@ class Ntree
         child.select { |c| c.name == name }.first
     end
 
+    def get_path
+        if (p = @parent)
+            p.get_path + "/" + name
+        else
+            ""
+        end
+    end
+
     def to_s
         return "#{name} #{fssize} #{subsize}" if child.size == 0
-        "#{name} #{fssize} #{subsize}\n" + child.map { |c| name + "/" + c.to_s }.join("\n")
+        "#{name} #{fssize} #{subsize}\n" + child.map { |c| get_path + "/" + c.to_s }.join("\n")
     end
 end
