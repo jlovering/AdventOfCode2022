@@ -9,7 +9,6 @@ OptionParser.parse do |parser|
     parser.banner = "Usage: initializeday.cr [arguemtns]"
     parser.on("-d DAY", "--day=DAY", "Specify the day") { |name| day = name.to_i}
     parser.on("-w", "--wait", "Wait for Santa") { wait = true}
-    parser.on("-w", "--wait", "Wait for Santa") { wait = true}
 end
 
 if day == 0
