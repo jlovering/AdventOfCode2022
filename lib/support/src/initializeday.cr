@@ -4,18 +4,24 @@ require "option_parser"
 
 day = 0
 wait = false
+init = true
+inputgrab = true
 
 OptionParser.parse do |parser|
     parser.banner = "Usage: initializeday.cr [arguemtns]"
     parser.on("-d DAY", "--day=DAY", "Specify the day") { |name| day = name.to_i}
     parser.on("-w", "--wait", "Wait for Santa") { wait = true}
+    parser.on("", "--noinit", "Don't init") { init = false}
+    parser.on("", "--nograb", "Don't attempt to grab") { inputgrab = false}
 end
 
 if day == 0
     day = Time.local.day
 end
 
-CreateDay.new(day+1).create_calendar
+if init
+    CreateDay.new(day+1).create_calendar
+end
 
 if wait
     now = Time.local
@@ -29,4 +35,6 @@ if wait
     end
 end
 
-InputData.new(day+1).input
+if inputgrab
+    InputData.new(day+1).input
+end
