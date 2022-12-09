@@ -19,7 +19,7 @@ CreateDay.new(day+1).create_calendar
 
 if wait
     now = Time.local
-    start = Time.local(now.year, now.month, day, 23, 0, 0)
+    start = Time.local(now.year, now.month, day, 23, 0, 1)
     time_to_start = start - now
     if time_to_start > Time::Span.new(nanoseconds: 0)
         puts "You're early sleeping for #{time_to_start}"
