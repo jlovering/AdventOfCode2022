@@ -1,0 +1,9 @@
+name: cgl
+version: 0.2.0
+
+authors:
+  - Romain Franceschini <franceschini.romain@gmail.com>
+
+crystal: ">= 0.36.0"
+
+license: MIT
